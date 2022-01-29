@@ -1,6 +1,7 @@
-import { Comment } from 'src/comments/entities/comment.entity';
-import { Role } from 'src/roles/entities/role.entity';
-import { Song } from 'src/songs/entities/song.entity';
+import { Comment } from '../../comments/entities/comment.entity';
+import { Playlist } from '../../playlists/entities/playlist.entity';
+import { Role } from '../../roles/entities/role.entity';
+import { Song } from '../../songs/entities/song.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -30,4 +31,7 @@ export class User {
 
     @OneToMany(() => Comment, (comments) => comments.user)
     comments: Comment[];
+
+    @OneToMany(() => Playlist, (playlists) => playlists.creator)
+    playlists: Playlist[];
 }

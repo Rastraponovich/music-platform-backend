@@ -1,26 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { QueryParams } from 'src/common/interfaces/query.interface';
+import { ILike, Repository, UpdateResult } from 'typeorm';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { Playlist } from './entities/playlist.entity';
 
 @Injectable()
 export class PlaylistsService {
-  create(createPlaylistDto: CreatePlaylistDto) {
-    return 'This action adds a new playlist';
-  }
+    constructor(
+        @InjectRepository(Playlist)
+        private readonly playlistRepository: Repository<Playlist>,
+    ) {}
+    async create(createPlaylistDto: CreatePlaylistDto): Promise<Playlist> {
+        return await this.playlistRepository.save(createPlaylistDto);
+    }
 
-  findAll() {
-    return `This action returns all playlists`;
-  }
+    async findAll(query: QueryParams): Promise<[Playlist[], number]> {
+        const { name, skip, take, withDeleted } = query;
+        const nameCondition = name && { name: ILike(`%${name}%`) };
+        return await this.playlistRepository.findAndCount({
+            where: {
+                ...nameCondition,
+            },
+            skip,
+            take,
+            withDeleted: withDeleted,
+        });
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} playlist`;
-  }
+    async findOne(id: number): Promise<Playlist> {
+        return await this.playlistRepository.findOne(id);
+    }
 
-  update(id: number, updatePlaylistDto: UpdatePlaylistDto) {
-    return `This action updates a #${id} playlist`;
-  }
+    async update(id: number, updatePlaylistDto: UpdatePlaylistDto): Promise<Playlist> {
+        const pl = await this.playlistRepository.findOne(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} playlist`;
-  }
+        await this.playlistRepository.save({ ...pl, ...updatePlaylistDto });
+
+        return await this.playlistRepository.findOne(id);
+    }
+
+    async remove(id: number): Promise<UpdateResult> {
+        return await this.playlistRepository.softDelete(id);
+    }
 }

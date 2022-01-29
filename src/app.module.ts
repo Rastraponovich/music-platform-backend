@@ -9,6 +9,10 @@ import { RolesModule } from './roles/roles.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -36,8 +40,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 logging: true,
             }),
         }),
+        ScheduleModule.forRoot(),
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, TasksService],
 })
 export class AppModule {}

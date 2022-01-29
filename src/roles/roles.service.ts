@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { QueryParams } from 'src/common/interfaces/query.interface';
+import { ILike, Repository, UpdateResult } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './entities/role.entity';
@@ -18,8 +19,17 @@ export class RolesService {
         return await this.rolesRepository.findOne(role);
     }
 
-    async findAll(): Promise<[Role[], number]> {
-        return await this.rolesRepository.findAndCount({ withDeleted: true });
+    async findAll(query: QueryParams): Promise<[Role[], number]> {
+        const { withDeleted, skip, name, take } = query;
+
+        const conditonName = name && { name: ILike(`%${name}%`) };
+
+        return await this.rolesRepository.findAndCount({
+            withDeleted: withDeleted,
+            take,
+            skip,
+            where: { ...conditonName },
+        });
     }
 
     async findOne(id: number): Promise<Role> {

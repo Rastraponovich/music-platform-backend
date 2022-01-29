@@ -1,8 +1,20 @@
-import { Comment } from 'src/comments/entities/comment.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Comment } from '../../comments/entities/comment.entity';
+import { Playlist } from '../../playlists/entities/playlist.entity';
+import { User } from '../../users/entities/user.entity';
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
-@Entity({ name: 'songs' })
+@Entity({ name: 'songs', orderBy: { id: 'ASC' } })
 export class Song {
     @PrimaryGeneratedColumn()
     id: number;
@@ -19,6 +31,9 @@ export class Song {
     @Column({ nullable: true })
     path: string;
 
+    @Column({ nullable: true, default: 'nocover.png' })
+    cover: string;
+
     @OneToMany(() => Comment, (comments) => comments.song)
     comments: Comment[];
 
@@ -26,4 +41,16 @@ export class Song {
     userId: number;
     @ManyToOne(() => User, (user) => user.songs)
     user: User;
+
+    @ManyToMany(() => Playlist, (playlists) => playlists.songs)
+    playlists: Playlist[];
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 }
