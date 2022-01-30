@@ -26,11 +26,12 @@ export class PlaylistsService {
             skip,
             take,
             withDeleted: withDeleted,
+            relations: ['songs', 'creator', 'comments'],
         });
     }
 
     async findOne(id: number): Promise<Playlist> {
-        return await this.playlistRepository.findOne(id);
+        return await this.playlistRepository.findOne(id, { relations: ['songs', 'creator', 'comments'] });
     }
 
     async update(id: number, updatePlaylistDto: UpdatePlaylistDto): Promise<Playlist> {
@@ -38,7 +39,7 @@ export class PlaylistsService {
 
         await this.playlistRepository.save({ ...pl, ...updatePlaylistDto });
 
-        return await this.playlistRepository.findOne(id);
+        return await this.playlistRepository.findOne(id, { relations: ['songs', 'creator', 'comments'] });
     }
 
     async remove(id: number): Promise<UpdateResult> {

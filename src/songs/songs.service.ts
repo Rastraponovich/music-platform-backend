@@ -30,6 +30,7 @@ export class SongsService {
             },
             skip,
             take,
+            relations: ['comments'],
         });
     }
 
@@ -48,10 +49,6 @@ export class SongsService {
         return await this.songsRepository.softDelete(id);
     }
     async deleteAll() {
-        const songs = await this.songsRepository.find({ withDeleted: true });
-
-        const ids = songs.map((song) => song.id);
-
-        return await this.songsRepository.delete(ids);
+        return await this.songsRepository.clear();
     }
 }

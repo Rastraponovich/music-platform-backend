@@ -2,20 +2,28 @@ import { Comment } from '../../comments/entities/comment.entity';
 import { Playlist } from '../../playlists/entities/playlist.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Song } from '../../songs/entities/song.entity';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IsNotEmpty, IsEmail, IsString } from 'class-validator';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false })
+    @Column()
+    @IsNotEmpty()
+    @IsString()
     name: string;
 
-    @Column({ nullable: false })
+    @Column()
+    @IsNotEmpty()
+    @IsEmail()
+    @Index({ unique: true })
     email: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, select: false })
+    @IsNotEmpty()
     password: string;
 
     @Column({ default: true })

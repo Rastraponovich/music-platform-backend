@@ -34,6 +34,9 @@ export class Song {
     @Column({ nullable: true, default: 'nocover.png' })
     cover: string;
 
+    @Column({ default: 0, nullable: true })
+    likes: number;
+
     @OneToMany(() => Comment, (comments) => comments.song)
     comments: Comment[];
 

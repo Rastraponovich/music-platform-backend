@@ -8,9 +8,6 @@ export class Comment {
     id: number;
 
     @Column({ nullable: false })
-    author: string;
-
-    @Column({ nullable: false })
     text: string;
 
     @Column({ default: true })

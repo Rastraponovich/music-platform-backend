@@ -25,7 +25,7 @@ export class UsersService {
         const nameCondition = name && { name: ILike(`%${name}%`) };
         return await this.usersRepository.findAndCount({
             withDeleted: withDeleted,
-            relations: ['songs'],
+            relations: ['songs', 'comments', 'playlists'],
             skip,
             take,
             where: { ...nameCondition },
