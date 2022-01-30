@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+    server:
+        build:
+            context: ./
+            dockerfile: Dockerfile.dev
+        command: yarn start:dev
+        ports:
+            - '4000:4000'
+
+    postgres:
+        image: postgres:latest
+        environment:
+            POSTGRES_DB: 'habrdb'
+            POSTGRES_USER: 'habrpguser'
+            POSTGRES_PASSWORD: 'pgpwd4habr'
+        volumes:
+            - database-data:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
+        networks:
+            - postgres
+    pgadmin:
+        container_name: pgadmin_container
+        image: dpage/pgadmin4:latest
+        environment:
+            PGADMIN_DEFAULT_EMAIL: 'wilde@bk.ru'
+            PGADMIN_DEFAULT_PASSWORD: '1'
+            PGADMIN_CONFIG_SERVER_MODE: 'False'
+        volumes:
+            - ./pgadmin:/var/lib/pgadmin
+        ports:
+            - '5050:80'
+        restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 2G
+        networks:
+            - postgres
+
+networks:
+    postgres:
+        driver: bridge
+volumes:
+    database-data:

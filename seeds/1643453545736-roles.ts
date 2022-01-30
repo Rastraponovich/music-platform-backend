@@ -19,8 +19,11 @@ export class roles1643453545736 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const ids: any = await queryRunner.manager.getRepository('roles').find();
+
         roles.forEach(async (role) => {
-            await queryRunner.manager.getRepository('roles').delete(role);
+            const id = ids.find((item) => (item.altName = role.altName));
+            await queryRunner.manager.getRepository('roles').delete(id.id);
         });
     }
 }
