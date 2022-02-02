@@ -51,6 +51,8 @@ export class SongsController {
         }),
     )
     create(@Body() createSongDto: CreateSongDto, @UploadedFiles() files: MultiFiles) {
+        console.log(createSongDto);
+
         return this.songsService.create({
             ...createSongDto,
             path: files.music[0].filename,

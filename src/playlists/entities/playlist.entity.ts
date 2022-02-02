@@ -24,6 +24,9 @@ export class Playlist {
     @Column({ default: true })
     isActive: boolean;
 
+    @Column({ default: 0 })
+    likes: number;
+
     @OneToMany(() => Comment, (comments) => comments.song)
     comments: Comment[];
 

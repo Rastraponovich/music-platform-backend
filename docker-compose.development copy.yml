@@ -8,6 +8,10 @@ services:
         command: yarn start:dev
         ports:
             - '4000:4000'
+        networks:
+            - postgres
+        volumes:
+            - ./:/app
 
     postgres:
         image: postgres:latest

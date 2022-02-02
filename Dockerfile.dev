@@ -1,5 +1,6 @@
 # Build
 FROM node:16.13.2-alpine3.14 AS build
 WORKDIR /app
-COPY ./* ./
+COPY ./package.json  ./
+COPY ./yarn.lock  ./
 RUN yarn install && npm cache clean --force

@@ -13,6 +13,8 @@ export class SongsService {
         private readonly songsRepository: Repository<Song>,
     ) {}
     async create(createSongDto: CreateSongDto): Promise<Song> {
+        console.log(createSongDto);
+
         return await this.songsRepository.save(createSongDto);
     }
 

@@ -10,24 +10,33 @@ import 'reflect-metadata';
 import { join } from 'path';
 import helmet from 'fastify-helmet';
 import { ValidationPipe } from '@nestjs/common';
+import { Response } from 'express';
 
 async function bootstrap() {
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }));
-
-    app.register(compression, { encodings: ['gzip', 'deflate'] });
-    app.useGlobalPipes(new ValidationPipe());
-    app.register(helmet, {
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: [`'self'`],
-                styleSrc: [`'self'`, `'unsafe-inline'`],
-                imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
-                scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
-            },
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ logger: true }), {
+        cors: {
+            origin: '*',
+            allowedHeaders: '*',
         },
     });
+    // app.register(compression, { encodings: ['gzip', 'deflate'] });
+    app.useGlobalPipes(new ValidationPipe());
+    app.useStaticAssets({
+        root: join(__dirname, '../../files'),
+    });
+
+    // app.register(helmet, {
+    //     contentSecurityPolicy: {
+    //         directives: {
+    //             defaultSrc: ['*'],
+    //             styleSrc: [`'self'`, `'unsafe-inline'`],
+    //             imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
+    //             scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+    //             mediaSrc: ['*', 'data:', 'validator.swagger.io'],
+    //         },
+    //     },
+    // });
     app.register(contentParser);
-    app.useStaticAssets({ root: join(__dirname, '../../music-platform-backend/files') });
 
     const configService = app.get(ConfigService);
 
